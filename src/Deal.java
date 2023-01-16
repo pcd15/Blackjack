@@ -3,16 +3,19 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+//@author Paul Dilly
+
 public class Deal {
 
-    private static Map<Integer, String> suits;
-    private static Map<Integer, String> names;
-    private Set<String> cardsDealt;
-    private StringBuilder myCards;
-    private int score;
+    private static Map<Integer, String> suits; //key: arbitrary integer, value: corresponding suit; used when generating cards for O(1) efficiency
+    private static Map<Integer, String> names; //key: integer, value: corresponding card name (for face cards only); used when generating cards for O(1) efficiency
+    private Set<String> cardsDealt; //stores all cards dealt so far in order to prevent duplicates (and thus simulate drawing from a real deck)
+    private StringBuilder myCards; //stores a StringBuilder representation of all cards in player's hand
+    private int score; //equals total of all cards in hand
     private int wins;
-    private int money;
+    private int money; //start with $50
    
+    //@param number: number of cards in starting hand (2 for Blackjack)
     public Deal(int number) {
         score = 0;
         wins = 0;
@@ -23,6 +26,7 @@ public class Deal {
         createCards(number);
     }
 
+    //initializes suits and names maps and then adds their key-value pairs to be accessed when generating random cards
     private static void initialize() {
         suits = new HashMap<>();
         suits.put(0, "Spades");
@@ -36,6 +40,9 @@ public class Deal {
         names.put(13, "King");
     }
     
+    /*simulates drawing from a shuffled deck by using random integers to generate a card; adds created cards to cardsDealt and myCards
+    * @param numCards: number of cards to generate
+    */
     private void createCards(int numCards) {
         int number;
         int suit;
@@ -62,8 +69,10 @@ public class Deal {
         } 
     }
    
+    //calls createCards again to generate and add another random card to hand
     public void hit() { createCards(1); }
-            
+         
+    //shuffles deck and resets hand
     public void redeal(int numCards) {
         cardsDealt = new HashSet<>();
         myCards = new StringBuilder();

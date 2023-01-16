@@ -12,7 +12,7 @@ public class Blackjack {
         do {
             game++;
             System.out.println();
-            if (game == 0) System.out.println("Welcome. Let's play some Blackjack!");
+            if (game == 1) System.out.println("Welcome. Let's play some Blackjack!");
             int bet = betting(player, play);
             playerTurn(player, play);
             dealerTurn(player, dealer);

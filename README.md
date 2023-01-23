@@ -5,4 +5,4 @@ This program simulates a Blackjack game between one player and a dealer. Blackja
 ## Assumptions
 1) The dealer will only hit if their hand's value is less than 17 and the player didn't bust.
 2) Aces will always be valued at 11, unless doing so would make the player/dealer bust, in which case the Ace will be valued at 1.
-3) If both the dealer and player bust, the dealer wins.
+3) If the dealer and player have hands of the same value, the dealer wins. Similarly, if both the dealer and player bust, the dealer wins.

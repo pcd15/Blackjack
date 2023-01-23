@@ -1,5 +1,4 @@
 import java.util.Scanner;
-
 //@author Paul Dilly
 
 public class Blackjack {
@@ -12,7 +11,7 @@ public class Blackjack {
         do {
             game++;
             System.out.println();
-            if (game == 1) System.out.println("Welcome. Let's play some Blackjack!");
+            if (game == 0) System.out.println("Welcome. Let's play some Blackjack!");
             int bet = betting(player, play);
             playerTurn(player, play);
             dealerTurn(player, dealer);
@@ -40,12 +39,17 @@ public class Blackjack {
 
     //conducts player's turn; continues running until either the player stops hitting or the player's cards total more than 21
     private static void playerTurn(Deal player, Scanner play) {
+        checkAces(player);
         System.out.println("You have these cards in your hand: " + player.getCards());
         System.out.println("Their total value is " + player.getScore() + ".");
         if (player.getScore() > 21) {
             System.out.println("Oh, no! You busted.");
             System.out.println();
         }   
+        else if (player.getScore() == 21) {
+            System.out.println("You win if the dealer doesn't get 21!");
+            System.out.println();
+        }
         else {
             System.out.println("Enter 1 if you'd like to hit or any other number if not.");
             System.out.println();
@@ -54,6 +58,7 @@ public class Blackjack {
                 do {
                     player.hit();
                     System.out.println();
+                    checkAces(player);
                     System.out.println("You now have these cards in your hand: " + player.getCards());
                     System.out.println("Their new total value is " + player.getScore() + ".");
                     if (player.getScore() > 21) {
@@ -76,6 +81,7 @@ public class Blackjack {
     //conducts dealer's turn, operating under the assumption that the dealer will only hit if their cards total less than 17
     private static void dealerTurn(Deal player, Deal dealer) {
         System.out.println();
+        checkAces(dealer);
         System.out.println("The dealer has these cards in their hand: " + dealer.getCards());
         System.out.println("Their total value is " + dealer.getScore() + ".");
         System.out.println();
@@ -83,11 +89,23 @@ public class Blackjack {
             do {
                 dealer.hit();
                 System.out.println();
+                checkAces(dealer);
                 System.out.println("The dealer hit and now has these cards in their hand: " + dealer.getCards());
                 System.out.println("Their new total value is " + dealer.getScore() + ".");
                 System.out.println();
             }
-            while (dealer.getScore() < 17 && player.getScore() <= 21);
+            while (dealer.getScore() < 17);
+        }
+    }
+
+    //checks if player/dealer has busted and changes values of Aces in their hands if they have any (in order to prevent busting)
+    private static void checkAces(Deal person) {
+        if (person.getScore() > 21 && person.getAces() > 0) {
+            do {
+                person.setScore(-10);
+                person.setAces(-1);
+            }
+            while (person.getScore() > 21 && person.getAces() > 0);
         }
     }
 
@@ -112,7 +130,7 @@ public class Blackjack {
         }
     }
 
-    //asks the player if they'd like to play again and, if so, redeals
+    //asks the player if they'd like to play again and redeals if so
     private static int reset(Deal player, Deal dealer, Scanner play) {
         System.out.println("Enter 1 if you'd like to play again, or enter any other number if not.");
         System.out.println();

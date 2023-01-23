@@ -11,12 +11,14 @@ public class Deal {
     private static Map<Integer, String> names; //key: integer, value: corresponding card name (for face cards only); used when generating cards for O(1) efficiency
     private Set<String> cardsDealt; //stores all cards dealt so far in order to prevent duplicates (and thus simulate drawing from a real deck)
     private StringBuilder myCards; //stores a StringBuilder representation of all cards in player's hand
+    private int aceCount; //keeps track of number of Aces in hand in case player busts and Ace value needs to be changed from 11 to 1
     private int score; //equals total of all cards in hand
     private int wins;
     private int money; //start with $50
    
     //@param number: number of cards in starting hand (2 for Blackjack)
     public Deal(int number) {
+        aceCount = 0;
         score = 0;
         wins = 0;
         money = 50;
@@ -62,11 +64,19 @@ public class Deal {
                 cardName = name + " of " + suits.get(suit);
             }
             cardsDealt.add(cardName);
-            score += number;
+            if (name.equals("Jack") || name.equals("Queen") || name.equals("King")) score += 10;
+            else if (name.equals("Ace")) {
+                if (score + 11 > 21) score += 1;
+                else { 
+                    score += 11; 
+                    aceCount++; 
+                }
+            }
+            else score += number; 
             if (numCards == 1) myCards.append(", ");
             myCards.append(cardName);
             if (i < numCards - 1) myCards.append(", ");
-        } 
+        }
     }
    
     //calls createCards again to generate and add another random card to hand
@@ -77,9 +87,13 @@ public class Deal {
         cardsDealt = new HashSet<>();
         myCards = new StringBuilder();
         score = 0;
+        aceCount = 0;
         createCards(numCards);
     }
 
+    //getter + setter methods
+    public int getAces() { return aceCount; }
+    public void setAces(int aces) { aceCount += aces; }
     public void setMoney(int dollars) { money += dollars; }
     public int getMoney() { return money; }
     public void setWins(int gamesWon) { wins += gamesWon; }
@@ -87,4 +101,4 @@ public class Deal {
     public void setScore(int myScore) { score += myScore; }
     public int getScore() { return score; }
     public String getCards() { return myCards.toString(); }
-} 
+}
